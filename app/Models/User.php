@@ -9,10 +9,10 @@ use Illuminate\Notifications\Notifiable;
 use Filament\Auth\MultiFactor\Email\Contracts\HasEmailAuthentication;
 use Filament\Auth\MultiFactor\Email\Concerns\InteractsWithEmailAuthentication;
 use Filament\Models\Contracts\FilamentUser;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Filament\Panel;
 
-class User extends Authenticatable implements FilamentUser, HasEmailAuthentication, MustVerifyEmail
+class User extends Authenticatable implements FilamentUser, HasEmailAuthentication
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, InteractsWithEmailAuthentication;
@@ -28,13 +28,12 @@ class User extends Authenticatable implements FilamentUser, HasEmailAuthenticati
         'password',
         'username',
         'phone_number',
-        'first_address',
-        'second_address',
-        'postcode',
-        'city',
-        'state',
+        // 'first_address',
+        // 'second_address',
+        // 'postcode',
+        // 'city',
+        // 'state',
         'role',
-        'has_email_authentication'
     ];
 
     /**

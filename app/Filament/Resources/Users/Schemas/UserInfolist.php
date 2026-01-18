@@ -28,16 +28,16 @@ class UserInfolist
                 TextEntry::make('username')
                     ->placeholder('-'),
                 TextEntry::make('role'),
-                TextEntry::make('first_address')
-                    ->placeholder('-'),
-                TextEntry::make('second_address')
-                    ->placeholder('-'),
-                TextEntry::make('postcode')
-                    ->placeholder('-'),
-                TextEntry::make('city')
-                    ->placeholder('-'),
-                TextEntry::make('state')
-                    ->placeholder('-'),
+                // TextEntry::make('first_address')
+                //     ->placeholder('-'),
+                // TextEntry::make('second_address')
+                //     ->placeholder('-'),
+                // TextEntry::make('postcode')
+                //     ->placeholder('-'),
+                // TextEntry::make('city')
+                //     ->placeholder('-'),
+                // TextEntry::make('state')
+                //     ->placeholder('-'),
             ]);
     }
 }

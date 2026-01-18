@@ -32,9 +32,12 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
-            ->multiFactorAuthentication([
-                EmailAuthentication::make()->codeExpiryMinutes(30),
-            ])
+            // ->multiFactorAuthentication([
+            //     EmailAuthentication::make()->codeExpiryMinutes(30),
+            // ])
+            ->passwordReset()
+            // ->registration()
+            ->emailVerification()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
@@ -44,6 +47,12 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 AccountWidget::class,
                 FilamentInfoWidget::class,
+            ])
+            ->assets([
+                \Filament\Support\Assets\Css::make(
+                    'property-archive',
+                    asset('css/property-archive.css')
+                ),
             ])
             ->middleware([
                 EncryptCookies::class,

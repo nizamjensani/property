@@ -1,0 +1,162 @@
+/* Page wrapper */
+.pa-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Filters */
+.pa-filters {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 16px;
+}
+
+.pa-filters-actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Grid */
+.pa-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 24px;
+}
+
+@media (min-width: 640px) {
+    .pa-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .pa-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Card */
+.pa-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0,0,0,.06);
+}
+
+/* Image */
+.pa-card-image {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    background: #f1f5f9;
+}
+
+.pa-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.pa-card-image-empty {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+/* Body */
+.pa-card-body {
+    padding: 20px;
+}
+
+.pa-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #0f172a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.pa-address {
+    margin-top: 4px;
+    font-size: 14px;
+    color: #475569;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.pa-price {
+    margin-top: 12px;
+    font-size: 18px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+/* Specs */
+.pa-specs {
+    margin-top: 12px;
+    display: flex;
+    gap: 24px;
+    font-size: 14px;
+    color: #334155;
+}
+
+/* Property type */
+.pa-type {
+    margin-top: 16px;
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    border: 1px solid #e5e7eb;
+    font-size: 12px;
+    font-weight: 600;
+    color: #334155;
+}
+
+/* Agent */
+.pa-agent {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.pa-agent-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+}
+
+.pa-agent-name {
+    margin-top: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.pa-agent-phone {
+    font-size: 14px;
+    color: #334155;
+}
+
+/* Empty */
+.pa-empty {
+    grid-column: 1 / -1;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 40px;
+    text-align: center;
+    color: #475569;
+}
+
+/* Pagination */
+.pa-pagination {
+    margin-top: 24px;
+}

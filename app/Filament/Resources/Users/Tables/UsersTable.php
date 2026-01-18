@@ -22,7 +22,8 @@ class UsersTable
                     ->searchable(),
                 TextColumn::make('email_verified_at')
                     ->dateTime()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -37,16 +38,21 @@ class UsersTable
                     ->searchable(),
                 TextColumn::make('role')
                     ->searchable(),
-                TextColumn::make('first_address')
-                    ->searchable(),
-                TextColumn::make('second_address')
-                    ->searchable(),
-                TextColumn::make('postcode')
-                    ->searchable(),
-                TextColumn::make('city')
-                    ->searchable(),
-                TextColumn::make('state')
-                    ->searchable(),
+                // TextColumn::make('first_address')
+                //     ->searchable()
+                //     ->toggleable(isToggledHiddenByDefault: true),
+                // TextColumn::make('second_address')
+                //     ->searchable()
+                //     ->toggleable(isToggledHiddenByDefault: true),
+                // TextColumn::make('postcode')
+                //     ->searchable()
+                //     ->toggleable(isToggledHiddenByDefault: true),
+                // TextColumn::make('city')
+                //     ->searchable()
+                //     ->toggleable(isToggledHiddenByDefault: true),
+                // TextColumn::make('state')
+                //     ->searchable()
+                //     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
