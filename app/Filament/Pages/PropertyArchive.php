@@ -22,14 +22,15 @@ use Filament\Forms\Form;
 class PropertyArchive extends Page implements HasForms
 {
     use InteractsWithForms;
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::Home;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::ListBullet;
+    protected static ?string $title = 'Filter Listings';
 
     protected string $view = 'filament.pages.property-archive';
 
     public array $filters = [
         'q' => null,
         'listing_type' => null,
-        'property_type_id' => null,
+        'property_type_ids' => [],
         'state' => null,
         'city' => null,
         'min_price' => null,
@@ -72,7 +73,7 @@ class PropertyArchive extends Page implements HasForms
                     ->live()
                     ->afterStateUpdated(fn() => $this->resetPage()),
 
-                Select::make('property_type_id')
+                Select::make('property_type_ids')
                     ->label('Property Type')
                     ->options(
                         fn() => PropertyType::query()
@@ -84,6 +85,7 @@ class PropertyArchive extends Page implements HasForms
                     ->searchable()
                     ->preload()
                     ->native(false)
+                    ->multiple()
                     ->live()
                     ->afterStateUpdated(fn() => $this->resetPage()),
 
@@ -205,7 +207,7 @@ protected function getPropertiesQuery()
 {
     $f = $this->filters;
 
-    $query = \App\Models\Property::query()
+    $query = Property::query()
         ->with(['user:id,name,phone_number', 'propertyType:id,name']);
 
     // your filters (same as before)...
@@ -219,7 +221,9 @@ protected function getPropertiesQuery()
     }
 
     if (! empty($f['listing_type'])) $query->where('listing_type', $f['listing_type']);
-    if (! empty($f['property_type_id'])) $query->where('property_type_id', $f['property_type_id']);
+    if (! empty($f['property_type_ids']) && is_array($f['property_type_ids'])) {
+        $query->whereIn('property_type_id', $f['property_type_ids']);
+    }
     if (! empty($f['state'])) $query->where('state', $f['state']);
     if (! empty($f['city'])) $query->where('city', $f['city']);
     if (! empty($f['bedrooms'])) $query->where('bedrooms', '>=', (int) $f['bedrooms']);
