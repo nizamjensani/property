@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Properties;
 use App\Filament\Resources\Properties\Pages\CreateProperty;
 use App\Filament\Resources\Properties\Pages\EditProperty;
 use App\Filament\Resources\Properties\Pages\ListProperties;
+use App\Filament\Resources\Properties\Pages\ListMyProperties;
 use App\Filament\Resources\Properties\Pages\ViewProperty;
 use App\Filament\Resources\Properties\Schemas\PropertyForm;
 use App\Filament\Resources\Properties\Schemas\PropertyInfolist;
@@ -17,6 +18,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Filament\Navigation\NavigationItem;
 
 class PropertyResource extends Resource
 {
@@ -24,7 +26,9 @@ class PropertyResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::Home;
 
-    protected static ?string $recordTitleAttribute = 'title';
+    // protected static ?string $recordTitleAttribute = 'title';
+    protected static ?string $title = 'All Properties';
+    protected static ?string $navigationLabel = 'All Properties';
 
     protected static ?int $navigationSort = 1;
 
@@ -54,29 +58,25 @@ class PropertyResource extends Resource
     {
         return [
             'index' => ListProperties::route('/'),
+            'my'    => ListMyProperties::route('/my'),
             'create' => CreateProperty::route('/create'),
             'view' => ViewProperty::route('/{record}'),
             'edit' => EditProperty::route('/{record}/edit'),
         ];
     }
 
-    public static function getEloquentQuery(): Builder
+
+
+    public static function getNavigationItems(): array
     {
-        $query = parent::getEloquentQuery();
+        return [
+            ...parent::getNavigationItems(),
 
-        $user = Auth::user();
-
-        // If not logged in, return empty (or keep as-is depending on your needs)
-        if (! $user) {
-            return $query->whereRaw('1=0');
-        }
-
-        // Superadmin can see everyone
-        if ($user->role === 'superadmin') {
-            return $query;
-        }
-
-        // Others can only see themselves
-        return $query->where('id', $user->id);
+            NavigationItem::make('My Property')
+                ->url(static::getUrl('my'))
+                ->icon(Heroicon::Home)
+                ->sort(1)
+                ->visible(fn(): bool => auth()->check()),
+        ];
     }
 }

@@ -34,6 +34,7 @@ class User extends Authenticatable implements FilamentUser, HasEmailAuthenticati
         // 'city',
         // 'state',
         'role',
+        'is_active'
     ];
 
     /**
@@ -56,6 +57,7 @@ class User extends Authenticatable implements FilamentUser, HasEmailAuthenticati
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_active' => 'boolean',
         ];
     }
 

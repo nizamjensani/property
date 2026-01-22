@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Properties\Tables;
 
+use App\Models\Property;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -18,7 +19,7 @@ class PropertiesTable
             ->columns([
                 TextColumn::make('user.name')
                     ->label('Agent Name')
-                    ->visible(fn () => auth()->user()?->role === 'superadmin')
+                    ->visible(fn() => auth()->user()?->role === 'superadmin')
                     ->searchable(),
                 TextColumn::make('listing_type')
                     ->label('Type')
@@ -41,7 +42,7 @@ class PropertiesTable
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('build_year')
-                ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('address')
                     ->searchable()
@@ -149,11 +150,19 @@ class PropertiesTable
             ])
             ->recordActions([
                 ViewAction::make(),
-                EditAction::make(),
+                EditAction::make()
+                    ->visible(
+                        fn($record) =>
+                        auth()->user()->role === 'superadmin'
+                            || $record->user_id === auth()->id()
+                    ),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn () => auth()->user()->role === 'superadmin'
+                            || Property::query()->where('user_id', auth()->id())->exists()
+                        ),
                 ]),
             ]);
     }

@@ -16,20 +16,20 @@ class PropertyInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('user.name'),
+                TextEntry::make('user.name')->label('Agent Name'),
                     
                 TextEntry::make('reference_no')
                     ->placeholder('-'),
                 TextEntry::make('title'),
+                TextEntry::make('listing_type')
+                ->badge(),
                 TextEntry::make('description')
                     ->placeholder('-')
                     ->columnSpanFull(),
-                TextEntry::make('listing_type')
-                    ->badge(),
                 TextEntry::make('status')
                     ->badge(),
-                TextEntry::make('property_type_id')
-                    ->numeric()
+                TextEntry::make('propertyType.name')
+                    ->label('Property Type')
                     ->placeholder('-'),
                 TextEntry::make('tenure')
                     ->badge(),
@@ -37,16 +37,12 @@ class PropertyInfolist
                     ->badge(),
                 TextEntry::make('build_year')
                     ->placeholder('-'),
-                TextEntry::make('address'),
-                TextEntry::make('address_2')
-                    ->placeholder('-'),
-                TextEntry::make('postcode'),
-                TextEntry::make('city')
-                    ->numeric()
-                    ->placeholder('-'),
-                TextEntry::make('state')
-                    ->numeric()
-                    ->placeholder('-'),
+                // TextEntry::make('address'),
+                // TextEntry::make('address_2')
+                //     ->placeholder('-'),
+                // TextEntry::make('postcode'),
+                TextEntry::make('cityRel.name')->label('City'),
+                TextEntry::make('stateRel.name')->label('State'),
                 TextEntry::make('latitude')
                     ->numeric()
                     ->placeholder('-'),
@@ -54,18 +50,28 @@ class PropertyInfolist
                     ->numeric()
                     ->placeholder('-'),
                 TextEntry::make('price')
-                    ->money()
-                    ->placeholder('-'),
+                    ->label('Price')
+                    ->state(fn ($record) => filled($record->price)
+                        ? "{$record->currency} " . number_format((float) $record->price, 2)
+                        : '-'
+                    ),
+                
                 TextEntry::make('monthly_rent')
-                    ->numeric()
-                    ->placeholder('-'),
-                TextEntry::make('currency'),
+                    ->label('Monthly Rent')
+                    ->state(fn ($record) => filled($record->monthly_rent)
+                        ? "{$record->currency} " . number_format((float) $record->monthly_rent, 2)
+                        : '-'
+                    ),
+                // TextEntry::make('currency'),
                 TextEntry::make('deposit_months')
                     ->numeric()
                     ->placeholder('-'),
                 TextEntry::make('maintenance_fee')
-                    ->numeric()
-                    ->placeholder('-'),
+                    ->placeholder('-')
+                    ->state(fn ($record) => filled($record->maintenance_fee)
+                        ? "{$record->currency} " . number_format((float) $record->maintenance_fee, 2)
+                        : '-'
+                    ),
                 IconEntry::make('negotiable')
                     ->boolean(),
                 TextEntry::make('built_up_sqft')
@@ -89,17 +95,17 @@ class PropertyInfolist
                 TextEntry::make('furnishing')
                     ->badge()
                     ->placeholder('-'),
-                TextEntry::make('available_from')
-                    ->date()
-                    ->placeholder('-'),
-                TextEntry::make('published_at')
-                    ->dateTime()
-                    ->placeholder('-'),
-                TextEntry::make('expires_at')
-                    ->dateTime()
-                    ->placeholder('-'),
-                TextEntry::make('views_count')
-                    ->numeric(),
+                // TextEntry::make('available_from')
+                //     ->date()
+                //     ->placeholder('-'),
+                // TextEntry::make('published_at')
+                //     ->dateTime()
+                //     ->placeholder('-'),
+                // TextEntry::make('expires_at')
+                //     ->dateTime()
+                //     ->placeholder('-'),
+                // TextEntry::make('views_count')
+                //     ->numeric(),
                 TextEntry::make('notes_internal')
                     ->placeholder('-')
                     ->columnSpanFull(),
@@ -119,10 +125,10 @@ class PropertyInfolist
                             ->visible(fn($record) => $record?->hasMedia('cover')),
 
                         // Gallery (multiple)
-                        SpatieMediaLibraryImageEntry::make('images')
-                            ->collection('images')
-                            ->label('Gallery')
-                            ->visible(fn($record) => $record?->hasMedia('images')),
+                        // SpatieMediaLibraryImageEntry::make('images')
+                        //     ->collection('images')
+                        //     ->label('Gallery')
+                        //     ->visible(fn($record) => $record?->hasMedia('images')),
 
                         // Documents (PDFs etc.)
                         // SpatieMediaLibraryFileEntry::make('documents')
@@ -131,38 +137,38 @@ class PropertyInfolist
                         //     ->visible(fn($record) => $record?->hasMedia('documents')),
                     ])
                     ->columns(1),
-                Section::make('Document')
-                    ->schema([
-                        // 2) SENARAI RECEIPTS DENGAN BUTANG DOWNLOAD
-                        RepeatableEntry::make('documents')
-                            ->label('Documents')
-                            ->schema([
-                                TextEntry::make('name')
-                                    ->label('Fail'),
+                // Section::make('Document')
+                //     ->schema([
+                //         // 2) SENARAI RECEIPTS DENGAN BUTANG DOWNLOAD
+                //         RepeatableEntry::make('documents')
+                //             ->label('Documents')
+                //             ->schema([
+                //                 TextEntry::make('name')
+                //                     ->label('Fail'),
 
-                                TextEntry::make('download_url')
-                                    ->label('Muat Turun')
-                                    ->icon('heroicon-o-arrow-down-tray')   // icon next to text
-                                    ->formatStateUsing(fn() => 'Muat Turun') // always show this text
-                                    ->url(fn(?string $state): ?string => $state) // $state = URL
-                                    ->openUrlInNewTab(),
-                            ])
-                            ->hiddenLabel()
-                            ->columnSpanFull()
-                            ->state(function ($record) {
-                                if (! $record) {
-                                    return [];
-                                }
+                //                 TextEntry::make('download_url')
+                //                     ->label('Muat Turun')
+                //                     ->icon('heroicon-o-arrow-down-tray')   // icon next to text
+                //                     ->formatStateUsing(fn() => 'Muat Turun') // always show this text
+                //                     ->url(fn(?string $state): ?string => $state) // $state = URL
+                //                     ->openUrlInNewTab(),
+                //             ])
+                //             ->hiddenLabel()
+                //             ->columnSpanFull()
+                //             ->state(function ($record) {
+                //                 if (! $record) {
+                //                     return [];
+                //                 }
                 
-                                return $record->getMedia('documents')
-                                    ->map(fn ($media) => [
-                                        'name'         => $media->file_name,
-                                        'download_url' => $media->getUrl(), // used by TextEntry
-                                    ])
-                                    ->values()
-                                    ->all();
-                            }),
-                        ]),
+                //                 return $record->getMedia('documents')
+                //                     ->map(fn ($media) => [
+                //                         'name'         => $media->file_name,
+                //                         'download_url' => $media->getUrl(), // used by TextEntry
+                //                     ])
+                //                     ->values()
+                //                     ->all();
+                //             }),
+                //         ]),
 
                 
             ]);

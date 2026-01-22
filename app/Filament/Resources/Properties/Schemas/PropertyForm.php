@@ -71,9 +71,9 @@ class PropertyForm
                     ->default('completed')
                     ->required(),
                 TextInput::make('build_year'),
-                TextInput::make('address'),
-                TextInput::make('address_2'),
-                TextInput::make('postcode'),
+                // TextInput::make('address'),
+                // TextInput::make('address_2'),
+                // TextInput::make('postcode'),
 
                 Select::make('state')
                     ->label('State')
@@ -112,16 +112,18 @@ class PropertyForm
                     ->numeric(),
                 TextInput::make('price')
                     ->numeric()
-                    ->prefix('$'),
+                    ->prefix('MYR'),
                 TextInput::make('monthly_rent')
-                    ->numeric(),
-                TextInput::make('currency')
-                    ->required()
-                    ->default('MYR'),
+                    ->numeric()
+                    ->prefix('MYR'),
+                // TextInput::make('currency')
+                //     ->required()
+                //     ->default('MYR'),
                 TextInput::make('deposit_months')
                     ->numeric(),
                 TextInput::make('maintenance_fee')
-                    ->numeric(),
+                    ->numeric()
+                    ->prefix('MYR'),
 
                 TextInput::make('built_up_sqft')
                     ->numeric(),
@@ -137,9 +139,9 @@ class PropertyForm
                     ->numeric(),
                 Select::make('furnishing')
                     ->options(['unfurnished' => 'Unfurnished', 'partial' => 'Partial', 'fully' => 'Fully']),
-                DatePicker::make('available_from'),
-                DateTimePicker::make('published_at'),
-                DateTimePicker::make('expires_at'),
+                // DatePicker::make('available_from'),
+                // DateTimePicker::make('published_at'),
+                // DateTimePicker::make('expires_at'),
                 Toggle::make('negotiable')
                     ->required(),
                 Textarea::make('notes_internal')
@@ -153,18 +155,18 @@ class PropertyForm
                             ->maxFiles(1)
                             ->required(),
 
-                        SpatieMediaLibraryFileUpload::make('images')
-                            ->collection('images')
-                            ->image()
-                            ->multiple()
-                            ->reorderable()
-                            ->imageEditor()
-                            ->maxFiles(20),
+                        // SpatieMediaLibraryFileUpload::make('images')
+                        //     ->collection('images')
+                        //     ->image()
+                        //     ->multiple()
+                        //     ->reorderable()
+                        //     ->imageEditor()
+                        //     ->maxFiles(20),
 
-                        SpatieMediaLibraryFileUpload::make('documents')
-                            ->collection('documents')
-                            ->multiple()
-                            ->maxFiles(10),
+                        // SpatieMediaLibraryFileUpload::make('documents')
+                        //     ->collection('documents')
+                        //     ->multiple()
+                        //     ->maxFiles(10),
                     ])
                     ->columns(1),
 

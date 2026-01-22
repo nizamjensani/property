@@ -17,6 +17,7 @@
     margin-top: 20px;
     display: flex;
     justify-content: flex-end;
+    gap: 10px;
 }
 
 /* Grid */
@@ -144,7 +145,14 @@
     font-size: 14px;
     color: #334155;
 }
-
+.pa-agent-link{
+    font-size: 14px;
+    color: #334155;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 100px;
+    text-decoration: underline;
+}
 /* Empty */
 .pa-empty {
     grid-column: 1 / -1;

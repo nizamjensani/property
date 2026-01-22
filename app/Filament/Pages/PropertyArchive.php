@@ -41,14 +41,17 @@ class PropertyArchive extends Page implements HasForms
         'sort' => 'latest',
     ];
 
+    public array $appliedFilters = [];
+
     protected function getForms(): array
     {
         return ['form'];
     }
 
+
     public function mount(): void
     {
-        // Fill the named form instance
+        $this->appliedFilters = $this->filters;     // initial applied = default
         $this->getForm('form')->fill($this->filters);
     }
 
@@ -60,8 +63,7 @@ class PropertyArchive extends Page implements HasForms
             ->components([
                 TextInput::make('q')
                     ->label('Search')
-                    ->placeholder('Title / Address / Postcode')
-                    ->live(onBlur: true),
+                    ->placeholder('Title / Address / Postcode'),
 
                 Select::make('listing_type')
                     ->label('Listing Type')
@@ -69,9 +71,7 @@ class PropertyArchive extends Page implements HasForms
                         'sale' => 'Sale',
                         'rent' => 'Rent',
                     ])
-                    ->native(false)
-                    ->live()
-                    ->afterStateUpdated(fn() => $this->resetPage()),
+                    ->native(false),
 
                 Select::make('property_type_ids')
                     ->label('Property Type')
@@ -85,21 +85,19 @@ class PropertyArchive extends Page implements HasForms
                     ->searchable()
                     ->preload()
                     ->native(false)
-                    ->multiple()
-                    ->live()
-                    ->afterStateUpdated(fn() => $this->resetPage()),
+                    ->multiple(),
+                    
 
-                Select::make('state')
+                    Select::make('state')
                     ->label('State')
                     ->options(fn() => State::query()->orderBy('name')->pluck('name', 'id')->all())
                     ->searchable()
                     ->preload()
                     ->native(false)
-                    ->live()
                     ->afterStateUpdated(function (Set $set) {
                         $set('city', null);
-                        $this->resetPage();
                     }),
+                
 
                 Select::make('city')
                     ->label('City / Mukim')
@@ -116,33 +114,25 @@ class PropertyArchive extends Page implements HasForms
                     ->searchable()
                     ->preload()
                     ->native(false)
-                    ->disabled(fn(Get $get) => blank($get('state')))
-                    ->live()
-                    ->afterStateUpdated(fn() => $this->resetPage()),
+                    ->disabled(fn(Get $get) => blank($get('state'))),
 
                 TextInput::make('min_price')
                     ->label('Min Price')
-                    ->numeric()
-                    ->live(onBlur: true),
+                    ->numeric(),
 
                 TextInput::make('max_price')
                     ->label('Max Price')
-                    ->numeric()
-                    ->live(onBlur: true),
+                    ->numeric(),
 
                 Select::make('bedrooms')
                     ->label('Bedrooms (min)')
                     ->options([1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => '5+'])
-                    ->native(false)
-                    ->live()
-                    ->afterStateUpdated(fn() => $this->resetPage()),
+                    ->native(false),
 
                 Select::make('bathrooms')
                     ->label('Bathrooms (min)')
                     ->options([1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => '5+'])
-                    ->native(false)
-                    ->live()
-                    ->afterStateUpdated(fn() => $this->resetPage()),
+                    ->native(false),
 
                 Select::make('furnishing')
                     ->label('Furnishing')
@@ -151,9 +141,7 @@ class PropertyArchive extends Page implements HasForms
                         'partial' => 'Partial',
                         'fully' => 'Fully',
                     ])
-                    ->native(false)
-                    ->live()
-                    ->afterStateUpdated(fn() => $this->resetPage()),
+                    ->native(false),
 
                 Select::make('sort')
                     ->label('Sort')
@@ -162,9 +150,7 @@ class PropertyArchive extends Page implements HasForms
                         'price_asc' => 'Price: Low to High',
                         'price_desc' => 'Price: High to Low',
                     ])
-                    ->native(false)
-                    ->live()
-                    ->afterStateUpdated(fn() => $this->resetPage()),
+                    ->native(false),
 
             ])
             ->columns(4);
@@ -175,7 +161,7 @@ class PropertyArchive extends Page implements HasForms
         $this->filters = [
             'q' => null,
             'listing_type' => null,
-            'property_type_id' => null,
+            'property_type_ids' => [],
             'state' => null,
             'city' => null,
             'min_price' => null,
@@ -185,11 +171,13 @@ class PropertyArchive extends Page implements HasForms
             'furnishing' => null,
             'sort' => 'latest',
         ];
-
+    
+        $this->appliedFilters = $this->filters;
+    
         $this->getForm('form')->fill($this->filters);
-
+    
         $this->resetPage();
-    }
+    }    
     public function resetPage(): void
     {
         if (method_exists($this, 'setPage')) {
@@ -203,12 +191,22 @@ public function getListingsProperty(): LengthAwarePaginator
     return $this->getPropertiesQuery()->paginate(12);
 }
 
+public function applyFilters(): void
+{
+    // copy draft -> applied
+    $this->appliedFilters = $this->filters;
+
+    // reset pagination so results start at page 1
+    $this->resetPage();
+}
+
 protected function getPropertiesQuery()
 {
-    $f = $this->filters;
+    $f = $this->appliedFilters ?: $this->filters;
 
     $query = Property::query()
-        ->with(['user:id,name,phone_number', 'propertyType:id,name']);
+        ->with(['user:id,name,phone_number', 'propertyType:id,name'])
+        ->where('status','Published');
 
     // your filters (same as before)...
     if (! empty($f['q'])) {

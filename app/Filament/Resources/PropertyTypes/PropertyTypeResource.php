@@ -57,4 +57,14 @@ class PropertyTypeResource extends Resource
             'edit' => EditPropertyType::route('/{record}/edit'),
         ];
     }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return auth()->check() && auth()->user()->role === 'superadmin';
+    }
+    
+    public static function canAccess(): bool
+    {
+        return auth()->check() && auth()->user()->role === 'superadmin';
+    }
 }

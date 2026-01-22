@@ -73,11 +73,21 @@ class Property extends Model implements HasMedia
         return $this->belongsTo(PropertyType::class);
     }
 
+    public function cityRel()
+    {
+        return $this->belongsTo(City::class, 'city', 'id');
+    }
+    
+    public function stateRel()
+    {
+        return $this->belongsTo(State::class, 'state', 'id');
+    }    
+
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('cover')->singleFile();   // 1 cover image
-        $this->addMediaCollection('images');                // gallery
-        $this->addMediaCollection('documents');             // PDFs etc
+        // $this->addMediaCollection('images');                // gallery
+        // $this->addMediaCollection('documents');             // PDFs etc
     }
     
 }

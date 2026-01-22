@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Users\Schemas;
 
 use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\IconEntry;
 use Filament\Schemas\Schema;
 
 class UserInfolist
@@ -28,6 +29,8 @@ class UserInfolist
                 TextEntry::make('username')
                     ->placeholder('-'),
                 TextEntry::make('role'),
+                IconEntry::make('is_active')
+                ->boolean(),
                 // TextEntry::make('first_address')
                 //     ->placeholder('-'),
                 // TextEntry::make('second_address')

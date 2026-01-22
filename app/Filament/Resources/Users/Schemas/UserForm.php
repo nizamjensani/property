@@ -8,6 +8,7 @@ use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Filament\Forms\Components\Toggle;
 
 class UserForm
 {
@@ -42,7 +43,9 @@ class UserForm
                 ]),
                 TextInput::make('phone_number')
                     ->tel(),
-
+                Toggle::make('is_active')
+                    ->default(true)
+                    ->required(),
                 // TextInput::make('first_address'),
                 // TextInput::make('second_address'),
                 // TextInput::make('postcode'),

@@ -8,6 +8,7 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\IconColumn;
 
 class UsersTable
 {
@@ -20,6 +21,8 @@ class UsersTable
                 TextColumn::make('email')
                     ->label('Email address')
                     ->searchable(),
+                IconColumn::make('is_active')
+                    ->boolean(),
                 TextColumn::make('email_verified_at')
                     ->dateTime()
                     ->sortable()
