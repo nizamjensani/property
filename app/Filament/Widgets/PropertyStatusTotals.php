@@ -13,28 +13,38 @@ class PropertyStatusTotals extends StatsOverviewWidget
     protected function getStats(): array
     {
         $user = auth()->user();
-
-        // Base queries
-        $rentedQuery = Property::query()
-            ->where('listing_type', 'rent');
-        $saleQuery = Property::query()
-            ->where('listing_type', 'sale');
-
-        if ($user && $user->role !== 'superadmin') {
-            $rentedQuery->where('user_id', $user->id);
-            $saleQuery->where('user_id', $user->id);
-        }
-        // Get totals
-        $rentedTotal = $rentedQuery->count();
-        $saleTotal = $saleQuery->count();
-
-
+        $own = Property::query()
+        ->where('user_id', $user->id )
+        ->count();
+        $rentTotal = Property::query()
+            ->where('listing_type', 'rent')
+            ->where('status', 'Published')
+            ->count();
+    
+        $saleTotal = Property::query()
+            ->where('listing_type', 'sale')
+            ->where('status', 'Published')
+            ->count();
+    
+        $soldTotal = Property::query()
+            ->where('listing_type', 'sale')
+            ->where('status', 'sold')   // change to 'Sold' if your DB uses that
+            ->count();
+    
+        $rentedOutTotal = Property::query()
+            ->where('listing_type', 'rent')
+            ->where('status', 'rented') // change to 'Rented' if your DB uses that
+            ->count();
+    
         return [
-            Stat::make('Total Rented Units', $rentedTotal),
-            Stat::make('Total Sale Units', $saleTotal),
-
+            Stat::make('Total Published For Sale', $saleTotal),
+            Stat::make('Total Published For Rent', $rentTotal),
+            Stat::make('Total Sold Out', $soldTotal),
+            Stat::make('Total Rented Out', $rentedOutTotal),
+            Stat::make('Total Own Listing', $own),
         ];
     }
+    
 
     protected function getPollingInterval(): ?string
     {

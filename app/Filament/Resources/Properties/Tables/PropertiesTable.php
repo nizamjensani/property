@@ -44,17 +44,17 @@ class PropertiesTable
                 TextColumn::make('build_year')
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('address')
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                // TextColumn::make('address')
+                //     ->searchable()
+                //     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('address_2')
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                // TextColumn::make('address_2')
+                //     ->searchable()
+                //     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('postcode')
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                // TextColumn::make('postcode')
+                //     ->searchable()
+                //     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('city')
                     ->numeric()
@@ -118,24 +118,24 @@ class PropertiesTable
                 TextColumn::make('furnishing')
                     ->badge()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('available_from')
-                    ->date()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                // TextColumn::make('available_from')
+                //     ->date()
+                //     ->sortable()
+                //     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('published_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                // TextColumn::make('published_at')
+                //     ->dateTime()
+                //     ->sortable()
+                //     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('expires_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('views_count')
-                    ->numeric()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                // TextColumn::make('expires_at')
+                //     ->dateTime()
+                //     ->sortable()
+                //     ->toggleable(isToggledHiddenByDefault: true),
+                // TextColumn::make('views_count')
+                //     ->numeric()
+                //     ->sortable()
+                //     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

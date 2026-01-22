@@ -63,7 +63,7 @@ class PropertyArchive extends Page implements HasForms
             ->components([
                 TextInput::make('q')
                     ->label('Search')
-                    ->placeholder('Title / Address / Postcode'),
+                    ->placeholder('Title'),
 
                 Select::make('listing_type')
                     ->label('Listing Type')
@@ -213,8 +213,6 @@ protected function getPropertiesQuery()
         $q = trim($f['q']);
         $query->where(fn ($sub) =>
             $sub->where('title', 'like', "%{$q}%")
-                ->orWhere('address', 'like', "%{$q}%")
-                ->orWhere('postcode', 'like', "%{$q}%")
         );
     }
 
