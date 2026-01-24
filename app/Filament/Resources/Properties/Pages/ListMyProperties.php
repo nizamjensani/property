@@ -6,6 +6,7 @@ use App\Filament\Resources\Properties\PropertyResource;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Support\Icons\Heroicon;
+use Filament\Actions\CreateAction;
 use BackedEnum;
 
 class ListMyProperties extends ListRecords
@@ -16,6 +17,13 @@ class ListMyProperties extends ListRecords
     protected static ?string $title = 'My Property';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::Home;
     protected static ?int $navigationSort = 5;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            CreateAction::make(),
+        ];
+    }
 
     public static function shouldRegisterNavigation(array $parameters = []): bool
     {

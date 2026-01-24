@@ -32,7 +32,7 @@ class PropertyArchive extends Page implements HasForms
         'listing_type' => null,
         'property_type_ids' => [],
         'state' => null,
-        'city' => null,
+        'cities' => [],
         'min_price' => null,
         'max_price' => null,
         'bedrooms' => null,
@@ -94,12 +94,13 @@ class PropertyArchive extends Page implements HasForms
                     ->searchable()
                     ->preload()
                     ->native(false)
+                    ->live()
                     ->afterStateUpdated(function (Set $set) {
-                        $set('city', null);
+                        $set('cities', null);
                     }),
                 
 
-                Select::make('city')
+                Select::make('cities')
                     ->label('City / Mukim')
                     ->options(function (Get $get) {
                         $stateId = $get('state');
@@ -114,6 +115,7 @@ class PropertyArchive extends Page implements HasForms
                     ->searchable()
                     ->preload()
                     ->native(false)
+                    ->multiple()
                     ->disabled(fn(Get $get) => blank($get('state'))),
 
                 TextInput::make('min_price')
@@ -163,7 +165,7 @@ class PropertyArchive extends Page implements HasForms
             'listing_type' => null,
             'property_type_ids' => [],
             'state' => null,
-            'city' => null,
+            'cities' => [],
             'min_price' => null,
             'max_price' => null,
             'bedrooms' => null,
@@ -221,7 +223,10 @@ protected function getPropertiesQuery()
         $query->whereIn('property_type_id', $f['property_type_ids']);
     }
     if (! empty($f['state'])) $query->where('state', $f['state']);
-    if (! empty($f['city'])) $query->where('city', $f['city']);
+    // if (! empty($f['city'])) $query->where('city', $f['city']);
+    if (! empty($f['cities']) && is_array($f['cities'])) {
+        $query->whereIn('city', $f['cities']);
+    }
     if (! empty($f['bedrooms'])) $query->where('bedrooms', '>=', (int) $f['bedrooms']);
     if (! empty($f['bathrooms'])) $query->where('bathrooms', '>=', (int) $f['bathrooms']);
     if (! empty($f['furnishing'])) $query->where('furnishing', $f['furnishing']);

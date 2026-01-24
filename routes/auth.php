@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
 

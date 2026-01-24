@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PropertyController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
@@ -60,9 +61,7 @@ Route::middleware('guest')->group(function () {
     })->name('password.update');
 });
 
-Route::get('/', function () {
-    return redirect()->to('/admin/login');
-});
+Route::get('/', [PropertyController::class, 'index'])->name('properties.index')->middleware('throttle:60,1');
 
 // Show "please verify" page
 Route::get('/email/verify', function () {
@@ -81,3 +80,14 @@ Route::post('/email/verification-notification', function (Request $request) {
 
     return back()->with('status', 'verification-link-sent');
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
+Route::get('/ajax/cities', function (\Illuminate\Http\Request $request) {
+    $stateId = $request->integer('state_id');
+
+    $cities = \App\Models\City::query()
+        ->where('state_id', $stateId)
+        ->orderBy('name')
+        ->pluck('name', 'id');
+
+    return response()->json($cities);
+})->name('ajax.cities');
