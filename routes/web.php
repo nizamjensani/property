@@ -61,8 +61,10 @@ Route::middleware('guest')->group(function () {
     })->name('password.update');
 });
 
-Route::get('/', [PropertyController::class, 'index'])->name('properties.index')->middleware('throttle:60,1');
-
+// Route::get('/', [PropertyController::class, 'index'])->name('properties.index')->middleware('throttle:60,1');
+Route::get('/', function () {
+    return redirect()->route('filament.admin.auth.login');
+});
 // Show "please verify" page
 Route::get('/email/verify', function () {
     return view('auth.verify-email'); // create this view (below)
