@@ -180,9 +180,15 @@
   .pa-pagination nav,
   .pa-pagination .pagination {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: .5rem;
     flex-wrap: wrap;
   }
+  span.inline-flex.rtl\:flex-row-reverse.shadow-sm.rounded-md {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
   
