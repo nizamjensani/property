@@ -14,7 +14,16 @@ class CreateProperty extends CreateRecord
         if (auth()->user()?->role !== 'superadmin') {
             $data['user_id'] = auth()->id();
         }
+        $coords = $this->data['coordinates'] ?? null;
 
+        if (!blank($coords)) {
+            $parts = array_map('trim', explode(',', (string) $coords));
+
+            if (count($parts) === 2 && is_numeric($parts[0]) && is_numeric($parts[1])) {
+                $data['latitude']  = (float) $parts[0];
+                $data['longitude'] = (float) $parts[1];
+            }
+        }
         return $data;
     }
 

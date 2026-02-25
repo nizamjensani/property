@@ -106,10 +106,52 @@ class PropertyForm
                     ->disabled(fn(Get $get) => blank($get('state')))
                     ->hint(fn(Get $get) => blank($get('state')) ? 'Select a state first' : null),
 
-                TextInput::make('latitude')
-                    ->numeric(),
-                TextInput::make('longitude')
-                    ->numeric(),
+                TextInput::make('coordinates')
+                    ->label('Coordinates (lat, long)')
+                    ->placeholder('3.1390, 101.6869')
+                    ->helperText('Format: latitude, longitude')
+                    ->dehydrated(false) // IMPORTANT: don't try to save this to DB column
+                    ->live(onBlur: true)
+                    ->afterStateHydrated(function (TextInput $component, $state, $record) {
+                        if ($record?->latitude === null || $record?->longitude === null) {
+                            return;
+                        }
+                    
+                        $fmt = fn ($v) => rtrim(rtrim((string) $v, '0'), '.');
+                    
+                        $component->state(
+                            $fmt($record->latitude) . ', ' . $fmt($record->longitude)
+                        );
+                    })
+                    ->rule(function () {
+                        // optional: simple validation rule (you can remove if you want)
+                        return function (string $attribute, $value, \Closure $fail) {
+                            if (blank($value)) return;
+
+                            $parts = array_map('trim', explode(',', (string) $value));
+                            if (count($parts) !== 2) {
+                                $fail('Coordinates must be in "latitude, longitude" format.');
+                                return;
+                            }
+
+                            [$lat, $lng] = $parts;
+
+                            if (!is_numeric($lat) || !is_numeric($lng)) {
+                                $fail('Latitude and longitude must be numbers.');
+                                return;
+                            }
+
+                            $lat = (float) $lat;
+                            $lng = (float) $lng;
+
+                            if ($lat < -90 || $lat > 90) $fail('Latitude must be between -90 and 90.');
+                            if ($lng < -180 || $lng > 180) $fail('Longitude must be between -180 and 180.');
+                        };
+                    }),
+                // TextInput::make('latitude')
+                //     ->numeric(),
+                // TextInput::make('longitude')
+                //     ->numeric(),
                 TextInput::make('price')
                     ->numeric()
                     ->prefix('MYR'),
