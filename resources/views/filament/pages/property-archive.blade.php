@@ -2,16 +2,19 @@
     <div class="pa-wrapper">
         {{-- Filters --}}
         <div class="pa-filters">
-            {{ $this->getForm('form') }}
+            <form wire:submit.prevent="applyFilters">
+                {{ $this->getForm('form') }}
 
-            <div class="pa-filters-actions">
-                <x-filament::button color="gray" wire:click="resetFilters">
-                    Reset
-                </x-filament::button>
-                <x-filament::button color="primary" wire:click="applyFilters">
-                    Apply
-                </x-filament::button>
-            </div>
+                <div class="pa-filters-actions">
+                    <x-filament::button type="button" color="gray" wire:click="resetFilters">
+                        Reset
+                    </x-filament::button>
+
+                    <x-filament::button type="submit" color="primary">
+                        Apply
+                    </x-filament::button>
+                </div>
+            </form>
         </div>
 
         @php
@@ -75,13 +78,12 @@
 
                         <a
                             href="{{ url('/admin/properties/' . $property->id) }}"
-                            class="pa-agent-link"
-                        >
+                            class="pa-agent-link">
                             View Property
                         </a>
 
                     </div>
-                    
+
                 </div>
             </div>
             @endforeach

@@ -18,10 +18,12 @@ use BackedEnum;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Livewire\WithPagination;
 
 class PropertyArchive extends Page implements HasForms
 {
     use InteractsWithForms;
+    use WithPagination;
     protected static string|BackedEnum|null $navigationIcon = Heroicon::ListBullet;
     protected static ?string $title = 'Filter Listings';
 
@@ -86,9 +88,9 @@ class PropertyArchive extends Page implements HasForms
                     ->preload()
                     ->native(false)
                     ->multiple(),
-                    
 
-                    Select::make('state')
+
+                Select::make('state')
                     ->label('State')
                     ->options(fn() => State::query()->orderBy('name')->pluck('name', 'id')->all())
                     ->searchable()
@@ -98,7 +100,7 @@ class PropertyArchive extends Page implements HasForms
                     ->afterStateUpdated(function (Set $set) {
                         $set('cities', null);
                     }),
-                
+
 
                 Select::make('cities')
                     ->label('City / Mukim')
@@ -173,75 +175,68 @@ class PropertyArchive extends Page implements HasForms
             'furnishing' => null,
             'sort' => 'latest',
         ];
-    
+
         $this->appliedFilters = $this->filters;
-    
+
         $this->getForm('form')->fill($this->filters);
-    
+
         $this->resetPage();
-    }    
-    public function resetPage(): void
+    }
+
+    public function getListingsProperty(): LengthAwarePaginator
     {
-        if (method_exists($this, 'setPage')) {
-            $this->setPage(1);
+        return $this->getPropertiesQuery()->paginate(12);
+    }
+
+    public function applyFilters(): void
+    {
+        // copy draft -> applied
+        $this->appliedFilters = $this->filters;
+
+        // reset pagination so results start at page 1
+        $this->resetPage();
+    }
+
+    protected function getPropertiesQuery()
+    {
+        $f = $this->appliedFilters ?: $this->filters;
+
+        $query = Property::query()
+            ->with(['user:id,name,phone_number', 'propertyType:id,name'])
+            ->where('status', 'Published');
+
+        // your filters (same as before)...
+        if (! empty($f['q'])) {
+            $q = trim($f['q']);
+            $query->where(
+                fn($sub) =>
+                $sub->where('title', 'like', "%{$q}%")
+            );
         }
+
+        if (! empty($f['listing_type'])) $query->where('listing_type', $f['listing_type']);
+        if (! empty($f['property_type_ids']) && is_array($f['property_type_ids'])) {
+            $query->whereIn('property_type_id', $f['property_type_ids']);
+        }
+        if (! empty($f['state'])) $query->where('state', $f['state']);
+        // if (! empty($f['city'])) $query->where('city', $f['city']);
+        if (! empty($f['cities']) && is_array($f['cities'])) {
+            $query->whereIn('city', $f['cities']);
+        }
+        if (! empty($f['bedrooms'])) $query->where('bedrooms', '>=', (int) $f['bedrooms']);
+        if (! empty($f['bathrooms'])) $query->where('bathrooms', '>=', (int) $f['bathrooms']);
+        if (! empty($f['furnishing'])) $query->where('furnishing', $f['furnishing']);
+
+        $priceField = ($f['listing_type'] ?? null) === 'rent' ? 'monthly_rent' : 'price';
+        if ($f['min_price'] !== null && $f['min_price'] !== '') $query->where($priceField, '>=', (int) $f['min_price']);
+        if ($f['max_price'] !== null && $f['max_price'] !== '') $query->where($priceField, '<=', (int) $f['max_price']);
+
+        match ($f['sort'] ?? 'latest') {
+            'price_asc'  => $query->orderBy($priceField, 'asc'),
+            'price_desc' => $query->orderBy($priceField, 'desc'),
+            default      => $query->orderByDesc('published_at')->orderByDesc('id'),
+        };
+
+        return $query;
     }
-
-
-public function getListingsProperty(): LengthAwarePaginator
-{
-    return $this->getPropertiesQuery()->paginate(12);
-}
-
-public function applyFilters(): void
-{
-    // copy draft -> applied
-    $this->appliedFilters = $this->filters;
-
-    // reset pagination so results start at page 1
-    $this->resetPage();
-}
-
-protected function getPropertiesQuery()
-{
-    $f = $this->appliedFilters ?: $this->filters;
-
-    $query = Property::query()
-        ->with(['user:id,name,phone_number', 'propertyType:id,name'])
-        ->where('status','Published');
-
-    // your filters (same as before)...
-    if (! empty($f['q'])) {
-        $q = trim($f['q']);
-        $query->where(fn ($sub) =>
-            $sub->where('title', 'like', "%{$q}%")
-        );
-    }
-
-    if (! empty($f['listing_type'])) $query->where('listing_type', $f['listing_type']);
-    if (! empty($f['property_type_ids']) && is_array($f['property_type_ids'])) {
-        $query->whereIn('property_type_id', $f['property_type_ids']);
-    }
-    if (! empty($f['state'])) $query->where('state', $f['state']);
-    // if (! empty($f['city'])) $query->where('city', $f['city']);
-    if (! empty($f['cities']) && is_array($f['cities'])) {
-        $query->whereIn('city', $f['cities']);
-    }
-    if (! empty($f['bedrooms'])) $query->where('bedrooms', '>=', (int) $f['bedrooms']);
-    if (! empty($f['bathrooms'])) $query->where('bathrooms', '>=', (int) $f['bathrooms']);
-    if (! empty($f['furnishing'])) $query->where('furnishing', $f['furnishing']);
-
-    $priceField = ($f['listing_type'] ?? null) === 'rent' ? 'monthly_rent' : 'price';
-    if ($f['min_price'] !== null && $f['min_price'] !== '') $query->where($priceField, '>=', (int) $f['min_price']);
-    if ($f['max_price'] !== null && $f['max_price'] !== '') $query->where($priceField, '<=', (int) $f['max_price']);
-
-    match ($f['sort'] ?? 'latest') {
-        'price_asc'  => $query->orderBy($priceField, 'asc'),
-        'price_desc' => $query->orderBy($priceField, 'desc'),
-        default      => $query->orderByDesc('published_at')->orderByDesc('id'),
-    };
-
-    return $query;
-}
-
 }
