@@ -25,7 +25,9 @@ class PropertyInfolist
                 ->badge(),
                 TextEntry::make('description')
                     ->placeholder('-')
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->formatStateUsing(fn ($state) => $state ? nl2br(e($state)) : null)
+                    ->html(),
                 TextEntry::make('status')
                     ->badge(),
                 TextEntry::make('propertyType.name')
