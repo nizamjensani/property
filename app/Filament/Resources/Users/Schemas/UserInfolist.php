@@ -31,6 +31,18 @@ class UserInfolist
                 TextEntry::make('role'),
                 IconEntry::make('is_active')
                 ->boolean(),
+                TextEntry::make('active_listing')
+                    ->label('Active Listing')
+                    ->state(fn ($record) => $record->properties()
+                        ->where('status', 'published')
+                        ->count()),
+
+                TextEntry::make('sold_rented_listing')
+                    ->label('Sold/Rented Listing')
+                    ->state(fn ($record) => $record->properties()
+                        ->whereIn('status', ['sold', 'rented'])
+                        ->count()),
+                    
                 // TextEntry::make('first_address')
                 //     ->placeholder('-'),
                 // TextEntry::make('second_address')

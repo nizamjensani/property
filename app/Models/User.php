@@ -11,6 +11,7 @@ use Filament\Auth\MultiFactor\Email\Concerns\InteractsWithEmailAuthentication;
 use Filament\Models\Contracts\FilamentUser;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Filament\Panel;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable implements FilamentUser, HasEmailAuthentication
 {
@@ -67,5 +68,10 @@ class User extends Authenticatable implements FilamentUser, HasEmailAuthenticati
         return in_array($this->role, ['superadmin', 'admin'], true);
         // OR if using Spatie:
         // return $this->hasAnyRole(['superadmin', 'admin']);
+    }
+
+    public function properties():HasMany
+    {
+        return $this->hasMany(Property::class);
     }
 }

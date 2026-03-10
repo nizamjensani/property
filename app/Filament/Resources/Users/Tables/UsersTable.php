@@ -15,6 +15,16 @@ class UsersTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function ($query) {
+                return $query->withCount([
+                    'properties as active_listing' => function ($q) {
+                        $q->where('status', 'published');
+                    },
+                    'properties as sold_rented_listing' => function ($q) {
+                        $q->whereIn('status', ['sold', 'rented']);
+                    },
+                ]);
+            })
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
@@ -41,6 +51,12 @@ class UsersTable
                     ->searchable(),
                 TextColumn::make('role')
                     ->searchable(),
+                TextColumn::make('active_listing')
+                    ->label('Active Listing')
+                    ->sortable(),
+                TextColumn::make('sold_rented_listing')
+                    ->label('Sold/Rented Listing')
+                    ->sortable(),
                 // TextColumn::make('first_address')
                 //     ->searchable()
                 //     ->toggleable(isToggledHiddenByDefault: true),
