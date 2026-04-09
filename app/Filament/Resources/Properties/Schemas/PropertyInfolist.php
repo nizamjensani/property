@@ -110,7 +110,9 @@ class PropertyInfolist
                 //     ->numeric(),
                 TextEntry::make('notes_internal')
                     ->placeholder('-')
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->formatStateUsing(fn ($state) => $state ? nl2br(e($state)) : null)
+                    ->html(),
                 TextEntry::make('created_at')
                     ->dateTime()
                     ->placeholder('-'),
