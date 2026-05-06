@@ -190,12 +190,13 @@ class PropertyForm
                     ->columnSpanFull(),
                 Section::make('Media')
                     ->components([
-                        SpatieMediaLibraryFileUpload::make('cover')
-                            ->collection('cover')
-                            ->image()
-                            ->imageEditor()
-                            ->maxFiles(1)
-                            ->required(),
+                SpatieMediaLibraryFileUpload::make('cover')
+                    ->collection('cover')
+                    ->image()
+                    ->rules(['mimes:jpg,jpeg,png,webp'])
+                    ->imageEditor()
+                    ->maxFiles(1)
+                    ->required()
 
                         // SpatieMediaLibraryFileUpload::make('images')
                         //     ->collection('images')
